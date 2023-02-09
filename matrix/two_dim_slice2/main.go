@@ -61,4 +61,7 @@ func main() {
 	m2, _ := New(m2Str)
 	fmt.Println(m2)
 	//fmt.Printf("matrix size %d x %d", m2.rowNum(), m2.colNum())
+
+	m0 := Matrix{}
+	fmt.Println(m0 == Matrix(nil))
 }

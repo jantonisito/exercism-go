@@ -7,18 +7,16 @@ import (
 )
 
 // Define the Matrix type here.
-type Matrix struct {
-	rNum int
-	cNum int
-	vals []int
-}
+type Matrix []int
 
 func New(s string) (Matrix, error) {
 	rStrs := strings.Split(s, "\n")
 	rNum := len(rStrs)
 	cNum := len(strings.Fields(rStrs[0]))
 	eNum := rNum * cNum
-	vals := make([]int, eNum)
+	vals := make([]int, 2+eNum)
+	vals[0] = rNum
+	vals[1] = cNum
 
 	for i, rowStr := range rStrs {
 		elems := strings.Fields(rowStr)
@@ -27,25 +25,25 @@ func New(s string) (Matrix, error) {
 		}
 		for j, s := range elems {
 			if x, err := strconv.Atoi(s); err == nil {
-				vals[i*cNum+j] = x
+				vals[2+i*cNum+j] = x
 			} else {
 				return Matrix{}, fmt.Errorf("string %s cannot be converted to integer: %v", s, err)
 			}
 		}
 	}
-	out := Matrix{rNum, cNum, vals}
+	out := vals
 	return out, nil
 }
 func (m Matrix) String() string {
-	return fmt.Sprintf("%d %d %v", m.rNum, m.cNum, m.vals)
+	return fmt.Sprintf("%d %d %v", m[0], m[1], m[2:])
 }
 
 // auxiliar func
 func (m Matrix) rowNum() int {
-	return m.rNum
+	return m[0]
 }
 func (m Matrix) colNum() int {
-	return m.cNum
+	return m[1]
 }
 
 // Cols and Rows must return the results without affecting the matrix.
@@ -56,7 +54,7 @@ func (m Matrix) Cols() [][]int {
 	for j := 0; j < cNum; j++ {
 		colOut := make([]int, rNum)
 		for i := 0; i < rNum; i++ {
-			colOut[i] = m.vals[i*cNum+j]
+			colOut[i] = m[2+i*cNum+j]
 		}
 		out[j] = colOut
 	}
@@ -82,21 +80,22 @@ func (m Matrix) Cols() [][]int {
 // }
 
 func (m Matrix) Rows() [][]int {
-	rNum := m.rNum
-	cNum := m.cNum
+	rNum := m.rowNum()
+	cNum := m.colNum()
 	out := make([][]int, rNum)
 	for i := 0; i < rNum; i++ {
 		rowOut := make([]int, cNum)
-		copy(rowOut, m.vals[i*cNum:(i+1)*cNum])
+		copy(rowOut, m[2+i*cNum:2+(i+1)*cNum])
 		out[i] = rowOut
 	}
 	return out
 }
 
 func (m Matrix) Set(row, col, val int) bool {
-	if row < 0 || col < 0 || row >= m.rNum || col >= m.cNum {
+	if row < 0 || col < 0 || row >= m.rowNum() || col >= m.colNum() {
 		return false
 	}
-	m.vals[row*m.rNum+col] = val
+	cNum := m.colNum()
+	m[2+row*cNum+col] = val
 	return true
 }
