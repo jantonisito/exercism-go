@@ -78,4 +78,7 @@ func main() {
 
 	m3 := m2.Transpose()
 	fmt.Println(m3)
+
+	m0 := Matrix{}
+	fmt.Println(m0 == nil)
 }
