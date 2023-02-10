@@ -47,46 +47,49 @@ func (m Matrix) colNum() int {
 }
 
 // Cols and Rows must return the results without affecting the matrix.
-func (m Matrix) Cols() [][]int {
-	rNum := m.rowNum()
-	cNum := m.colNum()
-	out := make([][]int, cNum)
-	for j := 0; j < cNum; j++ {
-		colOut := make([]int, rNum)
-		for i := 0; i < rNum; i++ {
-			colOut[i] = m[2+i*cNum+j]
-		}
-		out[j] = colOut
-	}
-	return out
-}
-
 // func (m Matrix) Cols() [][]int {
-// 	out := m.Transpose().Rows()
-// 	return out
-// }
-
-// func (m Matrix) Transpose() Matrix {
 // 	rNum := m.rowNum()
 // 	cNum := m.colNum()
-// 	out := make(Matrix, cNum)
+// 	out := make([][]int, cNum)
 // 	for j := 0; j < cNum; j++ {
-// 		out[j] = make([]int, rNum)
+// 		colOut := make([]int, rNum)
 // 		for i := 0; i < rNum; i++ {
-// 			out[j][i] = m[i][j]
+// 			colOut[i] = m[2+i*cNum+j]
 // 		}
+// 		out[j] = colOut
 // 	}
 // 	return out
 // }
+
+func (m Matrix) Cols() [][]int {
+	out := m.Transpose().Rows()
+	return out
+}
+
+func (m Matrix) Transpose() Matrix {
+	rNum := m.rowNum()
+	cNum := m.colNum()
+	out := make([]int, 2+rNum*cNum)
+	out[0] = cNum
+	out[1] = rNum
+	for i := 0; i < rNum; i++ {
+		offset := 2 + i*cNum
+		for j := 0; j < cNum; j++ {
+			out[2+j*rNum+i] = m[offset+j]
+		}
+	}
+	return out
+}
 
 func (m Matrix) Rows() [][]int {
 	rNum := m.rowNum()
 	cNum := m.colNum()
 	out := make([][]int, rNum)
+	mcopy := make([]int, 2+rNum*cNum)
+	copy(mcopy, m)
 	for i := 0; i < rNum; i++ {
-		rowOut := make([]int, cNum)
-		copy(rowOut, m[2+i*cNum:2+(i+1)*cNum])
-		out[i] = rowOut
+		offset := 2 + i*cNum
+		out[i] = mcopy[offset : offset+cNum]
 	}
 	return out
 }
