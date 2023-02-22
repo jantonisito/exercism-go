@@ -6,7 +6,12 @@ import "fmt"
 // List defined by the pointer to the head element
 // Note that the head element is not a real element
 type List struct {
-	next *List
+	next *Element
+	val  int
+}
+
+type Element struct {
+	next *Element
 	val  int
 }
 
@@ -26,12 +31,13 @@ func New(sl []int) *List {
 
 // String returns a string representation of the list.
 // Implementing the interface Stringer
-func (l *List) String() string {
+func (lst *List) String() string {
 	out := ""
-	curr := l
-	if curr == nil {
+	if lst.next == nil {
 		return out
 	}
+
+	curr := lst.next
 	for curr.next != nil {
 		out += fmt.Sprintf("%v, ", curr.val)
 		curr = curr.next
@@ -40,12 +46,13 @@ func (l *List) String() string {
 }
 
 // Size returns the number of elements in the list.
-func (l *List) Size() int {
-	curr := l
-	if l == nil {
+func (lst *List) Size() int {
+	//empty list case
+	if lst.next == nil {
 		return 0
 	}
-	out := 0
+	curr := lst.next
+	out := 1
 	for curr.next != nil {
 		curr = curr.next
 		out += 1
@@ -54,11 +61,11 @@ func (l *List) Size() int {
 }
 
 // Last returns the last element of the list.
-func (l *List) Last() *List {
-	curr := l
-	if curr == nil {
-		return curr
+func (lst *List) Last() *Element {
+	if lst.next == nil {
+		return nil
 	}
+	curr := lst.next
 	for curr.next != nil {
 		curr = curr.next
 	}
@@ -66,40 +73,45 @@ func (l *List) Last() *List {
 }
 
 // Push adds an element to the end of the list.
-func (l *List) Push(element int) {
-	last := l.Last()
+func (lst *List) Push(elem int) {
+	new := &Element{next: nil, val: elem}
+	last := lst.Last()
 	if last == nil {
-		l.val = element
-		return
+		lst.next = new
+	} else {
+
+		last.next = new
 	}
-	new := &List{next: nil, val: element}
-	last.next = new
 }
 
 // Pop removes the last element from the list and returns it.
-func (l *List) Pop() (int, error) {
-	if l.next == nil {
+func (lst *List) Pop() (int, error) {
+	if lst.next == nil {
 		return 0, fmt.Errorf("empty list")
 	}
-	curr := l
+	curr := lst.next
 	prev := curr
 	for curr.next != nil {
 		prev = curr
 		curr = curr.next
 	}
 	out := curr.val
-	prev.next = nil
+	if curr != prev {
+		prev.next = nil
+	} else {
+		lst.next = nil
+	}
 	return out, nil
 }
 
 // Array returns a slice of the list's elements.
-func (l *List) Array() []int {
-	size := l.Size()
+func (lst *List) Array() []int {
+	size := lst.Size()
 	if size == 0 {
 		return []int{}
 	}
 	out := make([]int, size)
-	curr := l.next
+	curr := lst.next
 	for i := 0; i < size; i++ {
 		out[i] = curr.val
 		curr = curr.next
@@ -108,12 +120,12 @@ func (l *List) Array() []int {
 }
 
 // Reverse reverses the list.
-func (l *List) Reverse() *List {
-	size := l.Size()
+func (lst *List) Reverse() *List {
+	size := lst.Size()
 	if size == 0 {
-		return l
+		return lst
 	}
-	arr := l.Array()
+	arr := lst.Array()
 	out := make([]int, size)
 	for i := 0; i < size; i++ {
 		out[i] = arr[size-i-1]
