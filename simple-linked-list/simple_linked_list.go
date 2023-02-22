@@ -7,7 +7,7 @@ import "fmt"
 // Note that the head element is not a real element
 type List struct {
 	next *Element
-	val  int
+	last *Element
 }
 
 type Element struct {
@@ -22,7 +22,7 @@ func New(sl []int) *List {
 		return &List{next: nil}
 	}
 	// create a new head element
-	pList := &List{next: nil}
+	pList := &List{next: nil, last: nil}
 	for _, s := range sl {
 		pList.Push(s)
 	}
@@ -62,14 +62,15 @@ func (lst *List) Size() int {
 
 // Last returns the last element of the list.
 func (lst *List) Last() *Element {
-	if lst.next == nil {
-		return nil
-	}
-	curr := lst.next
-	for curr.next != nil {
-		curr = curr.next
-	}
-	return curr
+	// if lst.next == nil {
+	// 	return nil
+	// }
+	// curr := lst.next
+	// for curr.next != nil {
+	// 	curr = curr.next
+	// }
+	// return curr
+	return lst.last
 }
 
 // Push adds an element to the end of the list.
@@ -78,9 +79,11 @@ func (lst *List) Push(elem int) {
 	last := lst.Last()
 	if last == nil {
 		lst.next = new
+		lst.last = new
 	} else {
 
 		last.next = new
+		lst.last = new
 	}
 }
 
@@ -98,8 +101,10 @@ func (lst *List) Pop() (int, error) {
 	out := curr.val
 	if curr != prev {
 		prev.next = nil
+		lst.last = prev
 	} else {
 		lst.next = nil
+		lst.last = nil
 	}
 	return out, nil
 }
