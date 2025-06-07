@@ -1,3 +1,3 @@
-module linkedlist
+module simple-linked-list
 
-go 1.16
+go 1.23.4

@@ -1,3 +1,4 @@
+// preliminary code to demonstrate struct methods in Go
 package main
 
 import (
