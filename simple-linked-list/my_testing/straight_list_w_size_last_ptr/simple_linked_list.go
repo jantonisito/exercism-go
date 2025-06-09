@@ -13,10 +13,10 @@ import (
 // due to separation of concern.
 type List struct {
 	// Pointer to the first element in the list.
-	first *Element
+	head *Element
 	// Tracks the number of elements in the list.
 	size int
-	last *Element // pointer to the last element in the list, not used in this implementation
+	last *Element // pointer to the last element in the list
 }
 type Element struct {
 	// Pointer to the next element in the list.
@@ -28,7 +28,7 @@ type Element struct {
 // String implements the Stringer interface for Element.
 // It returns a string representation of the element's value.
 func (e *Element) String() string {
-	return fmt.Sprintf("%d", e.val)
+	return fmt.Sprintf("%d", (*e).val)
 }
 
 // val returns the value of the element.
@@ -36,58 +36,58 @@ func (e *Element) Val() int {
 	return e.val
 }
 
-// New creates a new linked list from the input slice.
-// Note: The input slice `sl` should not be modified externally after calling this function,
-// as the function assumes ownership of the slice's data for memory allocation.
-// func New(sl []int) *List {
-// 	// allocate memory for all elements
-// 	elems := make([]Element, len(sl))
-// 	// create a new head element
-// 	var lst List
-// 	for i, val := range sl {
-// 		elems[i].val = val
-// 		elems[i].next = lst.first
-// 		lst.first = &elems[i]
-// 	}
-// 	return &lst
-// }
-// Note: The above commented code is a previous version of the New function.
-// It creates a new linked list from the input slice by allocating memory for all elements
-// and linking them together. The function assumes ownership of the slice's data for memory allocation.
-// It is efficient memory allocation and avoids unnecessary copying of data but requires
-// New creates a new linked list from the input slice.
-// The problem is that the memory for the list is allocated on the stack,
-// but Push and Pop methods require the memory to be allocated on the heap.
-
 // function New creates a new linked list from the input slice.
 // Note: The input slice `sl` should not be modified externally after calling this function,
 // as the function assumes ownership of the slice's data for memory allocation.
-func New(sl []int) *List {
+// func New(sl []int) *List {
+// 	// create a new head element
+// 	lst := &List{first: nil, size: 0, last: nil}
+// 	// pushing elements one at a time is more idiomatic Go way
+// 	for _, val := range sl {
+// 		lst.Push(val)
+// 	}
+// 	// TODO consider using a more efficient way to update the last pointer
+// 	// update the last pointer to point to the last element
+// 	if lst.head != nil {
+// 		curr := lst.head
+// 		for curr.next != nil {
+// 			curr = curr.next
+// 		}
+// 		lst.last = curr
+// 	} else {
+// 		lst.last = nil // if the list is empty, last should be nil
+// 	}
+// 	// return the created list
+// 	return lst
+// }
+
+func New(data []int) *List {
 	// create a new head element
-	lst := &List{first: nil, size: 0, last: nil}
+	lst := &List{head: nil, size: 0, last: nil}
+	size := len(data)
+	if size == 0 {
+		return lst // return an empty list if the input slice is empty
+	}
+	if size == 1 {
+		// if the input slice has only one element, create a single element list
+		lst.head = &Element{val: data[0]}
+		lst.last = lst.head // last is the same as first in this case
+		lst.size = 1        // set size to 1
+		return lst          // return the single element list
+	}
+
 	// pushing elements one at a time is more idiomatic Go way
-	for _, val := range sl {
-		lst.Push(val)
+	for i := 0; i < (size - 1); i++ {
+		lst.Push(data[i])
 	}
-	// TODO consider using a more efficient way to update the last pointer
-	// update the last pointer to point to the last element
-	if lst.first != nil {
-		curr := lst.first
-		for curr.next != nil {
-			curr = curr.next
-		}
-		lst.last = curr
-	} else {
-		lst.last = nil // if the list is empty, last should be nil
-	}
-	// return the created list
+	lst.last = lst.Push(data[size-1]) // push the last element separately
 	return lst
 }
 
 // String returns a string representation of the list.
 func (lst *List) String() string {
 	var builder strings.Builder
-	curr := lst.first
+	curr := lst.head
 	for curr != nil {
 		builder.WriteString(strconv.Itoa(curr.val) + ", ")
 		curr = curr.next
@@ -110,29 +110,31 @@ func (lst *List) Last() *Element {
 }
 
 // Push adds an element to the end of the list.
-func (lst *List) Push(elem int) {
+func (lst *List) Push(elem int) *Element {
 	newElem := &Element{val: elem}
-	if lst.first == nil {
-		lst.first = newElem
+	if lst.head == nil {
+		lst.head = newElem
 		lst.last = newElem // update last pointer to the first element
 		lst.size++         // increment size for the first element
-		return
+		return newElem
 	}
 	lst.last.next = newElem // update last pointer to the new element
 	lst.last = newElem      // update the last pointer to the new element
 	lst.size++              // increment size for each pushed element
+	return newElem
 }
 
 // Pop removes the last element from the list and returns it.
 func (lst *List) Pop() (int, error) {
-	if lst.first == nil {
+	if lst.head == nil {
 		return 0, fmt.Errorf("empty list")
 	}
-	curr := lst.first
+	curr := lst.head
 	if curr.next == nil {
 		val := curr.val
-		lst.first = nil // remove the only element
-		lst.size--      // decrement size for the last element
+		lst.head = nil // remove the only element
+		lst.size--     // decrement size for the last element
+		lst.last = nil // last should be nil if the list is empty
 		return val, nil
 	}
 	// traverse to the second last element
@@ -155,7 +157,7 @@ func (lst *List) Array() []int {
 		return []int{}
 	}
 	out := make([]int, size)
-	curr := lst.first
+	curr := lst.head
 	for i := 0; i < size; i++ {
 		out[i] = curr.val
 		curr = curr.next
@@ -165,26 +167,40 @@ func (lst *List) Array() []int {
 
 // Reverse reverses the list.
 func (lst *List) Reverse() *List {
-	size := lst.Size()
+	size := lst.size
 	if size == 0 || size == 1 {
 		// if the list is empty or has only one element, return it as is
 		// this is an optimization to avoid unnecessary memory allocation
 		return lst
 	}
-	// out := make([]int, size)
-	// arr := lst.Array()
-	// for i := 0; i < size; i++ {
-	// 	out[size-i-1] = arr[i]
-	// }
-	// return New(out)
-	prev := (*Element)(nil)
-	curr := lst.first
+	prev := lst.head
+	curr := prev.next
+	var next *Element
 	for curr != nil {
-		prev = curr.next
-		prev.next = curr
-		curr = prev
+		next = curr.next // store the next element
+		curr.next = prev // reverse the link
+		prev = curr      // move prev to the current element
+		curr = next
 	}
-	lst.first, lst.last = lst.last, lst.first // swap first and last pointers
-	lst.last.next = nil                       // set the next of the new last element to nil
+	lst.head, lst.last = lst.last, lst.head // swap first and last pointers
+	lst.last.next = nil                     // set the next of the new last element to nil
 	return lst
 }
+
+// // Reverse reverses the list in place. Copilot version
+// func (lst *List) Reverse() *List {
+// 	if lst.size == 0 || lst.size == 1 {
+// 		return lst
+// 	}
+// 	var prev *Element
+// 	curr := lst.head
+// 	lst.last = lst.head // after reversal, the first becomes the last
+// 	for curr != nil {
+// 		next := curr.next
+// 		curr.next = prev
+// 		prev = curr
+// 		curr = next
+// 	}
+// 	lst.head = prev
+// 	return lst
+// }

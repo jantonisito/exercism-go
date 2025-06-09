@@ -3,11 +3,14 @@ package main
 
 import (
 	"fmt"
-	"simple-linked-list"
+	// sl "simple-linked-list/my_testing/straight_list_w_size_last_ptr"
+	// sl "simple-linked-list/my_testing/straight_list_w_size" // Uncomment this line to use the previous version of the linked list
+	// sl "simple-linked-list/my_testing/straight_list_w_size_last_and_penultimate_ptr"
+	sl "simple-linked-list/my_testing/reverse_list_w_size_last_ptr"
 )
 
 func main() {
-	lst := simple_linked_list.New([]int{1, 2, 3})
+	lst := sl.New([]int{1, 2, 3})
 	fmt.Println(lst)
 	fmt.Println("Size of the list:", lst.Size())
 	fmt.Println("Last element of the list:", lst.Last())
@@ -21,10 +24,12 @@ func main() {
 	arr := lst.Array()
 	fmt.Println("List converted to array:", arr)
 
-	list := simple_linked_list.New([]int{})
+	list := sl.New([]int{})
 	list.Push(1)
 	list.Push(2)
-	list.Push(3)
+	// list.Push(3)
+	elem := list.Push(3)
+	fmt.Printf("Element pushed: %v\n", elem)
 	fmt.Printf("Size of list from [] after 3 calls to Push(): %d\n", list.Size())
 	fmt.Printf("List after pushing 1, 2, 3: %s\n", list)
 	fmt.Println("Last element of the list after pushing 1, 2, 3:", list.Last())
