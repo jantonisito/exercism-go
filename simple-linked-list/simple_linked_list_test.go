@@ -1,4 +1,4 @@
-package simple_linked_list
+package linkedlist
 
 import (
 	"reflect"

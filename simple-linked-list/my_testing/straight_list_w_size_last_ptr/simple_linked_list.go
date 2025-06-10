@@ -1,4 +1,24 @@
+// Package straight_list_w_size_last_ptr provides a simple implementation of a singly linked list
+// with a size and a pointer to the last element.
+// It provides methods to create a list, push and pop elements, retrieve the size of the list
+// reverse list in place, return string and array representation of the list.
+// Elements are stored sequentioally which poses a problem for the Push and Pop methods.
+// Pointer to last element is used to optimize the Push and Reverse methods.
+// -----------------------------------------------------------------------------------------------------------
+// Benchmark numbers
+// -----------------------------------------------------------------------------------------------------------
+// BenchmarkNewList-8               2490790               467.0 ns/op           184 B/op         11 allocs/op
+// BenchmarkListSize-8             1000000000               0.3136 ns/op          0 B/op          0 allocs/op
+// BenchmarkListPush-8                32628             39263 ns/op           16000 B/op       1000 allocs/op
+// BenchmarkListPop-8                  1698            621709 ns/op               0 B/op          0 allocs/op
+// BenchmarkListMixedPopPush-8          883           1201683 ns/op           16000 B/op       1000 allocs/op
+// BenchmarkListToArray-8          26510866                44.82 ns/op           80 B/op          1 allocs/op
+// BenchmarkListReverse-8          81666541                13.10 ns/op            0 B/op          0 allocs/op
+// BenchmarkLongListReverse-8         88768             12278 ns/op               0 B/op          0 allocs/op
+// -----------------------------------------------------------------------------------------------------------
 package straight_list_w_size_last_ptr
+
+// package linked_list // renamed for exercism
 
 import (
 	"fmt"

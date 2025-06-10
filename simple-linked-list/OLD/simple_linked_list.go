@@ -1,22 +1,4 @@
-// Package straight_list_w_size implements a simple linked list with size tracking.
-// It provides methods to create a list, push and pop elements, retrieve the size of the list
-// reverse list in place, return string and array representation of the list.
-// Elements are stored sequentioally which poses a problem for the Push and Pop methods.
-// -----------------------------------------------------------------------------------------------------------
-// Benchmark numbers
-// -----------------------------------------------------------------------------------------------------------
-// BenchmarkNewList-8               2322774               564.1 ns/op           160 B/op         10 allocs/op
-// BenchmarkListSize-8             1000000000               0.5046 ns/op          0 B/op          0 allocs/op
-// BenchmarkListPush-8                 1257            920151 ns/op           16000 B/op       1000 allocs/op
-// BenchmarkListPop-8                  1593            798561 ns/op               0 B/op          0 allocs/op
-// BenchmarkListMixedPopPush-8          404           3017539 ns/op           16000 B/op       1000 allocs/op
-// BenchmarkListToArray-8          20443556                56.12 ns/op           80 B/op          1 allocs/op
-// BenchmarkListReverse-8           1631755               695.5 ns/op           336 B/op         13 allocs/op
-// BenchmarkLongListReverse-8            15          72519120 ns/op          323856 B/op      10003 allocs/op
-// -----------------------------------------------------------------------------------------------------------
-package straight_list_w_size
-
-// package linked_list // renamed for exercism
+package straight_list_w_size_last_ptr
 
 import (
 	"fmt"
@@ -26,15 +8,15 @@ import (
 
 // Define the List and Element types here.
 
-// List defined by the pointer to the first element head.
+// List defined by the pointer to the first element.
 // This approach allows for easier development of the list.
 // due to separation of concern.
 type List struct {
 	// Pointer to the first element in the list.
-	head *Element
+	first *Element
 	// Tracks the number of elements in the list.
 	size int
-	// last *Element // pointer to the last element in the list, not used in this implementation
+	last *Element // pointer to the last element in the list, not used in this implementation
 }
 type Element struct {
 	// Pointer to the next element in the list.
@@ -64,8 +46,8 @@ func (e *Element) Val() int {
 // 	var lst List
 // 	for i, val := range sl {
 // 		elems[i].val = val
-// 		elems[i].next = lst.next
-// 		lst.next = &elems[i]
+// 		elems[i].next = lst.first
+// 		lst.first = &elems[i]
 // 	}
 // 	return &lst
 // }
@@ -82,18 +64,30 @@ func (e *Element) Val() int {
 // as the function assumes ownership of the slice's data for memory allocation.
 func New(sl []int) *List {
 	// create a new head element
-	lst := &List{head: nil, size: 0}
+	lst := &List{first: nil, size: 0, last: nil}
 	// pushing elements one at a time is more idiomatic Go way
 	for _, val := range sl {
 		lst.Push(val)
 	}
+	// TODO consider using a more efficient way to update the last pointer
+	// update the last pointer to point to the last element
+	if lst.first != nil {
+		curr := lst.first
+		for curr.next != nil {
+			curr = curr.next
+		}
+		lst.last = curr
+	} else {
+		lst.last = nil // if the list is empty, last should be nil
+	}
+	// return the created list
 	return lst
 }
 
 // String returns a string representation of the list.
 func (lst *List) String() string {
 	var builder strings.Builder
-	curr := lst.head
+	curr := lst.first
 	for curr != nil {
 		builder.WriteString(strconv.Itoa(curr.val) + ", ")
 		curr = curr.next
@@ -112,39 +106,33 @@ func (lst *List) Size() int {
 
 // Last returns the last element of the list.
 func (lst *List) Last() *Element {
-	curr := lst.head
-	if curr == nil {
-		return nil
-	}
-	for curr.next != nil {
-		curr = curr.next
-	}
-	return curr
+	return lst.last
 }
 
 // Push adds an element to the end of the list.
 func (lst *List) Push(elem int) {
 	newElem := &Element{val: elem}
-	if lst.head == nil {
-		lst.head = newElem
-		lst.size++ // increment size for the first element
+	if lst.first == nil {
+		lst.first = newElem
+		lst.last = newElem // update last pointer to the first element
+		lst.size++         // increment size for the first element
 		return
 	}
-	last := lst.Last()
-	last.next = newElem
-	lst.size++ // increment size for each pushed element
+	lst.last.next = newElem // update last pointer to the new element
+	lst.last = newElem      // update the last pointer to the new element
+	lst.size++              // increment size for each pushed element
 }
 
 // Pop removes the last element from the list and returns it.
 func (lst *List) Pop() (int, error) {
-	if lst.head == nil {
+	if lst.first == nil {
 		return 0, fmt.Errorf("empty list")
 	}
-	curr := lst.head
+	curr := lst.first
 	if curr.next == nil {
 		val := curr.val
-		lst.head = nil // remove the only element
-		lst.size--     // decrement size for the last element
+		lst.first = nil // remove the only element
+		lst.size--      // decrement size for the last element
 		return val, nil
 	}
 	// traverse to the second last element
@@ -154,7 +142,8 @@ func (lst *List) Pop() (int, error) {
 	}
 	toRemove := curr.next
 	curr.next = nil
-	lst.size-- // decrement size for each popped element
+	lst.last = curr // update the last pointer to the second last element
+	lst.size--      // decrement size for each popped element
 
 	return toRemove.val, nil
 }
@@ -166,7 +155,7 @@ func (lst *List) Array() []int {
 		return []int{}
 	}
 	out := make([]int, size)
-	curr := lst.head
+	curr := lst.first
 	for i := 0; i < size; i++ {
 		out[i] = curr.val
 		curr = curr.next
@@ -177,13 +166,25 @@ func (lst *List) Array() []int {
 // Reverse reverses the list.
 func (lst *List) Reverse() *List {
 	size := lst.Size()
-	if size == 0 {
+	if size == 0 || size == 1 {
+		// if the list is empty or has only one element, return it as is
+		// this is an optimization to avoid unnecessary memory allocation
 		return lst
 	}
-	out := make([]int, size)
-	arr := lst.Array()
-	for i := 0; i < size; i++ {
-		out[size-i-1] = arr[i]
+	// out := make([]int, size)
+	// arr := lst.Array()
+	// for i := 0; i < size; i++ {
+	// 	out[size-i-1] = arr[i]
+	// }
+	// return New(out)
+	prev := (*Element)(nil)
+	curr := lst.first
+	for curr != nil {
+		prev = curr.next
+		prev.next = curr
+		curr = prev
 	}
-	return New(out)
+	lst.first, lst.last = lst.last, lst.first // swap first and last pointers
+	lst.last.next = nil                       // set the next of the new last element to nil
+	return lst
 }

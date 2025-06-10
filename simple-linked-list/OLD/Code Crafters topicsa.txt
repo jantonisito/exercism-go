@@ -1,0 +1,133 @@
+Build your own Redis
+Learn about TCP servers, the Redis protocol and more
+
+Build your own HTTP server
+Learn about TCP servers, the HTTP protocol and more
+
+=Build your own Shell
+Learn about parsing shell commands, executing programs and more
+
+Build your own grep
+Learn about regex syntax: character classes, quantifiers and more
+
+Build your own Interpreter
+Learn about tokenization, ASTs, tree-walk interpreters and more.
+
+Build your own BitTorrent
+Learn about .torrent files, the BitTorrent Peer Protocol and more
+
+Build your own Kafka
+Learn about TCP servers, the Kafka wire protocol and more.
+
+Build your own Git
+Learn about git objects, plumbing commands and more
+
+Build your own SQLite
+Learn about SQL syntax, SQLite's file format, B-trees and more
+
+
+Build your own DNS server
+Learn about the DNS protocol, DNS record types and more.
+
+Excellent—this is a rich lineup. Let me help you evaluate these based on your current goals, which as I understand are:
+
+* **Backend development (Go-centric)**
+* **Possible DevSecOps focus**
+* **Building a portfolio**
+* **Reviewing Go fundamentals and getting ready for concurrency and generics**
+
+Here’s a breakdown with suggestions:
+
+---
+
+### 🥇 **Best First Choices for Backend Focus (Go)**
+
+#### ✅ **Build Your Own Redis**
+
+* **Why:** Excellent for understanding TCP servers, binary protocols, key-value storage, and concurrency patterns in Go.
+* **Relevance:** Redis is widely used in backend systems for caching, messaging, and more.
+* **Portfolio Value:** High—great for showing you understand performance, I/O, protocol handling, and memory management.
+
+#### ✅ **Build Your Own HTTP Server**
+
+* **Why:** Reinforces how HTTP really works, builds confidence in TCP, sockets, and parsing.
+* **Relevance:** Foundational for any backend engineer.
+* **Portfolio Value:** Medium to high—helps explain how servers work under the hood, but may look simpler unless you extend it.
+
+---
+
+### 🧠 **Deep Learning + Parsing / Systems Projects**
+
+#### 🔶 **Build Your Own Shell**
+
+* **Why:** Good mix of parsing, I/O, process management—teaches a lot about how OS-level tools work.
+* **Relevance:** Great for DevOps-y people. If you’re ever writing CLI tools, this is very helpful.
+* **Portfolio Value:** Medium—might look niche unless paired with something practical.
+
+#### 🔶 **Build Your Own Git**
+
+* **Why:** Teaches low-level file formats, hashing, tree structures, and command parsing.
+* **Relevance:** Great for DevSecOps or tooling work—shows deep understanding of a complex real-world system.
+* **Portfolio Value:** High if presented well—many people are curious about Git internals.
+
+---
+
+### 📜 **For Interpreters / Compiler-Minded Coders**
+
+#### 🧪 **Build Your Own Interpreter**
+
+* **Why:** Perfect for learning parsing, tokenization, ASTs.
+* **Relevance:** Less aligned with backend/DevSecOps, but excellent for language design and theory.
+* **Portfolio Value:** High in specific niches (language design, teaching, dev tools).
+
+---
+
+### 🌐 **For Protocol / Network Engineering**
+
+#### 🌐 **Build Your Own DNS Server**
+
+* **Why:** Pure network protocol engineering. Teaches DNS record types, UDP/TCP, packet parsing.
+* **Relevance:** More specialized; useful if you want to go deep into infrastructure.
+* **Portfolio Value:** Medium—great for DevSecOps showing off protocol knowledge.
+
+#### 🌐 **Build Your Own BitTorrent**
+
+* **Why:** High complexity, requires protocol parsing, peer communication, file I/O.
+* **Relevance:** Good for deep networking practice.
+* **Portfolio Value:** High—but only if you complete it well (can get very complex).
+
+---
+
+### 🧵 **Low-Level Storage & Databases**
+
+#### 💾 **Build Your Own SQLite**
+
+* **Why:** Advanced. You’ll dive into B-Trees, disk layout, SQL parsing—excellent for understanding database internals.
+* **Relevance:** High for backend systems that need custom storage or indexing.
+* **Portfolio Value:** Very high—but challenging. Not a first project unless you’re feeling confident.
+
+---
+
+### 🧪 **Build Your Own grep**
+
+* **Why:** Focused on regex and text parsing.
+* **Relevance:** Nice, but limited in scope.
+* **Portfolio Value:** Low unless paired with something bigger.
+
+---
+
+### 🔍 Recommendation Strategy
+
+#### If you want a smooth but meaningful start:
+
+* **Start with `Build Your Own Redis`** or `HTTP Server`. These align with your backend and DevSecOps goals and help reinforce Go fundamentals like concurrency, TCP, and protocol parsing.
+
+#### Then move to:
+
+* `Shell` or `Git` (if you're leaning DevSecOps or tool-building)
+* `DNS Server` or `BitTorrent` (if you're into protocols and networking)
+* `SQLite` (once you're ready for a meaty challenge)
+
+---
+
+Want help choosing between **Redis** and **HTTP Server** as a first Code Crafters project? I can show you what the first few steps of each look like and what concepts you’d review.

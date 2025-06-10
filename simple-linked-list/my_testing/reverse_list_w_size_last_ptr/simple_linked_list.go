@@ -1,4 +1,24 @@
-package straight_list_w_size_last_ptr
+// Package reverse_list_w_size_last_ptr implements a simple linked list with a pointer to the last element
+// called head, pointer to the first element called first, and a size field. Elements can be pushed to the
+// end of the list and popped from the end. So the list is stored in the reversed order with last element
+// serving as head. This allows for fast push and VERY fast pop operation.
+// The list can be reversed efficiently in place so the other methods that need the list in the original order
+// (e.g. String or Array) can use the Reverse method.
+// -----------------------------------------------------------------------------------------------------------
+// Benchmark numbers
+// -----------------------------------------------------------------------------------------------------------
+// BenchmarkNewList-8               2568400               443.0 ns/op           184 B/op         11 allocs/op
+// BenchmarkListSize-8             1000000000               0.3391 ns/op          0 B/op          0 allocs/op
+// BenchmarkListPush-8                32023             38138 ns/op           16000 B/op       1000 allocs/op
+// BenchmarkListPop-8                321286              3821 ns/op               0 B/op          0 allocs/op
+// BenchmarkListMixedPopPush-8        27550             43758 ns/op           16000 B/op       1000 allocs/op
+// BenchmarkListToArray-8          13614518                77.52 ns/op           80 B/op          1 allocs/op
+// BenchmarkListReverse-8          87522244                14.08 ns/op            0 B/op          0 allocs/op
+// BenchmarkLongListReverse-8        100586             12102 ns/op               0 B/op          0 allocs/op
+// -----------------------------------------------------------------------------------------------------------
+package reverse_list_w_size_last_ptr
+
+// package linked_list // renamed for exercism
 
 import (
 	"fmt"

@@ -1,4 +1,26 @@
+// Package: my_testing/straight_list_w_size_last_and_penultimate_ptr implements a linked list of integers
+// with a size, last, and penultimate pointers. Pointers to the last and penultimate elements
+// are used to optimize the performance of the list operations, such as push and pop.
+// Penultimate pointer is cached to avoid traversing the list to find the second last element.
+// Once the cached penultimate elemenet is usec cache is invalidated and recalculated either on
+// the next push or pop operation. This approach allows for efficient list operations especially
+// in cases of mixed push and pop operations, where the penultimate element is frequently accessed
+// and the cache is invalidated but trivially recalculated in the next push operation.
+// -----------------------------------------------------------------------------------------------------------
+// Benchmark numbers
+// -----------------------------------------------------------------------------------------------------------
+// BenchmarkNewList-8               2412472               480.6 ns/op           208 B/op         11 allocs/op
+// BenchmarkListSize-8             1000000000               0.3250 ns/op          0 B/op          0 allocs/op
+// BenchmarkListPush-8                32265             39139 ns/op           16000 B/op       1000 allocs/op
+// BenchmarkListPop-8                  2374            435944 ns/op               0 B/op          0 allocs/op
+// BenchmarkListMixedPopPush-8        29137             44736 ns/op           16000 B/op       1000 allocs/op
+// BenchmarkListToArray-8          23009090                51.52 ns/op           80 B/op          1 allocs/op
+// BenchmarkListReverse-8          85336698                13.01 ns/op            0 B/op          0 allocs/op
+// BenchmarkLongListReverse-8         84051             12331 ns/op               0 B/op          0 allocs/op
+// -----------------------------------------------------------------------------------------------------------
 package straight_list_w_size_last_and_penultimate_ptr
+
+// package linked_list // renamed for exercism
 
 import (
 	"fmt"
