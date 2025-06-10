@@ -16,9 +16,9 @@
 // BenchmarkListReverse-8          78223797                13.84 ns/op            0 B/op          0 allocs/op
 // BenchmarkLongListReverse-8         79933             13890 ns/op               0 B/op          0 allocs/op
 // -----------------------------------------------------------------------------------------------------------
-// package reverse_list_w_size
+package reverse_list_w_size
 
-package linkedlist // renamed for exercism
+// package linked_list // renamed for exercism
 
 import (
 	"fmt"
@@ -167,7 +167,7 @@ func (lst *List) Reverse() *List {
 	prev := lst.head
 	curr := prev.next
 	oldHead := lst.head // store the old head to update it later
-	newHead := curr
+	var newHead *Element
 	var next *Element
 	for curr != nil {
 		next = curr.next // store the next element
