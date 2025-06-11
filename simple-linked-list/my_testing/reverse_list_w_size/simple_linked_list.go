@@ -21,6 +21,7 @@ package reverse_list_w_size
 // package linked_list // renamed for exercism
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -28,15 +29,12 @@ import (
 
 // Define the List and Element types here.
 
-// List defined by the pointer to the last  element.
+// List defined by the pointer to the last element - head.
 // This approach allows for easier development of Push and Pop methods
 // due to separation of concern.
 type List struct {
-	// Pointer to the first element in the list.
 	head *Element
-	// Tracks the number of elements in the list.
 	size int
-	// first *Element // pointer to the last element in the reversed list - actual first element
 }
 type Element struct {
 	// Pointer to the next element in the list.
@@ -57,22 +55,28 @@ func (e *Element) Val() int {
 }
 
 func New(data []int) *List {
-	// create a new head element
-	lst := &List{head: nil, size: 0}
-	size := len(data)
-	if size == 0 {
-		return lst // return an empty list if the input slice is empty
-	}
-	if size == 1 {
-		// if the input slice has only one element, create a single element list
-		lst.head = &Element{val: data[0]}
-		lst.size = 1 // set size to 1
-		return lst   // return the single element list
-	}
+	// OLD verbose code
+	//--------------------------------------------
+	// lst := &List{}
+	// size := len(data)
+	// if size == 0 {
+	// 	return lst // return an empty list if the input slice is empty
+	// }
+	// if size == 1 {
+	// 	// if the input slice has only one element, create a single element list
+	// 	lst.head = &Element{val: data[0]}
+	// 	lst.size = 1 // set size to 1
+	// 	return lst   // return the single element list
+	// }
 
-	// pushing elements one at a time is more idiomatic Go way
-	for i := 0; i < size; i++ {
-		lst.Push(data[i])
+	// // pushing elements one at a time is more idiomatic Go way
+	// for i := 0; i < size; i++ {
+	// 	lst.Push(data[i])
+	// }
+	//--------------------------------------------
+	lst := &List{}
+	for _, elem := range data {
+		lst.Push(elem)
 	}
 	return lst
 }
@@ -122,7 +126,8 @@ func (lst *List) Push(elem int) *Element {
 // Pop removes the last element from the list and returns it.
 func (lst *List) Pop() (int, error) {
 	if lst.head == nil {
-		return 0, fmt.Errorf("empty list")
+		//return 0, fmt.Errorf("empty list")
+		return 0, errors.New("pop from empty list")
 	}
 	var val int
 	if lst.size == 1 {
