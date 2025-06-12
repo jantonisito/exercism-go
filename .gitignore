@@ -1,0 +1,35 @@
+# Go build artifacts
+*.exe
+*.exe~
+*.out
+*.test
+*.cov
+*.coverage
+
+# Go module/vendor/workspace files
+vendor/
+go.work
+
+# Build directories
+/bin/
+bin/
+obj/
+
+# Editor & IDE settings
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Log and environment files
+*.log
+*.env
+
+# Exercism and LSP artifacts
+**/.exercism/
+**/.lsp/
+*.mdb
+
+# OS-specific files
+.DS_Store
+Thumbs.db
