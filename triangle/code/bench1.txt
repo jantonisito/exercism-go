@@ -1,0 +1,7 @@
+goos: windows
+goarch: amd64
+pkg: exercism/Go/triangle/code
+cpu: Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz
+BenchmarkKind-8   	  645302	      1657 ns/op
+PASS
+ok  	exercism/Go/triangle/code	1.714s
