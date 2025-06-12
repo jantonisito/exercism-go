@@ -1,0 +1,41 @@
+jantonisito: so in this case I have module `twofer` that lives in a subdirectory `code` why is it then that I import it with full path like "exercism/Go/twofer/code"?
+
+GitHub Copilot: In Go, the import path is relative to the `GOPATH` or the module path specified in the `go.mod` file at the root of your project, not the file that's doing the importing. 
+
+When you import a package like "exercism/Go/twofer/code", Go will look for the code in the directory `$GOPATH/src/exercism/Go/twofer/code` or relative to the module path in `go.mod`.
+
+If your `go.mod` file specifies `module exercism/Go`, then Go will look for `twofer/code` in a subdirectory of the directory containing `go.mod`.
+
+This allows for a consistent way to refer to packages, regardless of the structure of your project or where in the project your files are.
+
+jantonisito: OK so `go.mod` at the root level of the project says `module exercism/Go/twofer` and files in `code` directory declare `package twofer` and `main.go` imports it as `twofer "exercism/Go/twofer/code"`
+
+But if I understand you correctly go mode can declare `module zanzibar` and `main.go` would import `twofer "zanzibar/code"`
+
+GitHub Copilot: Yes, you're correct. If you change the module declaration in `go.mod` to `module zanzibar`, then you would import the `twofer` package in `main.go` as `twofer "zanzibar/code"`. 
+
+The import path is relative to the module path specified in `go.mod`. So, if `go.mod` declares `module zanzibar`, Go will look for `code` in a subdirectory of the directory containing `go.mod`.
+
+Here's how you would change the import statement in `main.go`:
+
+```go
+import twofer "zanzibar/code"
+```
+
+This tells Go to look for the `twofer` package in the `code` directory under the root directory of the `zanzibar` module.
+
+jantonisito: brilliant - is there anything else I need to understand about modules?
+
+GitHub Copilot: Yes, there are a few more important concepts about Go modules:
+
+1. **Versioning**: Go modules support semantic versioning. You can specify the version of a module you want to use in your project. This is especially useful when using third-party modules.
+
+2. **Dependency Management**: Go modules automatically manage your project's dependencies. When you import a package, Go will automatically add it to your `go.mod` file and download the necessary files to the `pkg/mod` directory in your `GOPATH`.
+
+3. **Replace Directive**: In your `go.mod` file, you can use the `replace` directive to tell Go to use a different version of a module, or to use a local copy of a module. This is useful for testing changes to a module without publishing the changes.
+
+4. **Minimum Version Selection**: When building a module, Go will select the minimum version of each dependency that satisfies the import requirements. This helps ensure compatibility and stability.
+
+5. **Vendoring**: Go modules also support vendoring, which is the process of making a copy of your project's dependencies in a `vendor` directory in your project. This can be useful for ensuring that you have a copy of your dependencies, for example, for offline development.
+
+Remember, the `go.mod` file is crucial for managing these aspects of your project. It's automatically generated when you run `go mod init`, and it's updated when you add or update dependencies.
